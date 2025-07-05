@@ -44,7 +44,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - UrbanPlan</title>
+    <title>Urban Infrastructure Planning</title>
     <style>
         * {
             margin: 0;
@@ -143,7 +143,7 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('image/contact.jpg');
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('client/image/index.jpg');
             background-size: cover;
             background-position: center;
             color: #fff;
@@ -206,64 +206,6 @@
 
         .content ul li {
             margin-bottom: 0.5rem;
-        }
-        /* Team Section */
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .team-card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .team-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .team-card img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 1rem;
-            border: 3px solid #68d391;
-            transition: transform 0.3s ease;
-        }
-
-        .team-card img:hover {
-            transform: scale(1.1);
-        }
-
-        .team-card h3 {
-            font-size: 1.5rem;
-            color: #1a202c;
-            margin-bottom: 0.5rem;
-        }
-
-        .team-card p {
-            font-size: 1rem;
-            color: #4a5568;
-            margin-bottom: 1rem;
-        }
-
-        .team-card a {
-            color: #68d391;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .team-card a:hover {
-            color: #48bb78;
         }
 
         /* Footer */
@@ -352,14 +294,6 @@
             .hero p {
                 font-size: 1rem;
             }
-               .team-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .team-card img {
-                width: 80px;
-                height: 80px;
-            }
         }
 
         .menu-toggle {
@@ -376,56 +310,61 @@
             <span class="menu-toggle">☰</span>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li class="dropdown">
-                    <a href="projects.html">Mini Project</a>
+                <li>
+                    <a href="client/projects.html">Mini Project</a>
                 </li>
-                <li class="dropdown">
-                    <a href="resources.html">Resources</a>
+                <li>
+                    <a href="client/resources.html">Resources</a>
                 </li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
+                <li><a href="client/about.html">About</a></li>
+                <li><a href="client/contact.html">Contact</a></li>
             </ul>
         </div>
     </nav>
 
     <section class="hero">
-        <h1>Contact UrbanPlan</h1>
-        <p>Reach out to us for collaboration, inquiries, or feedback.</p>
+        <h1>Visualize, analyze, and optimize urban infrastructure with our interactive dashboard.</h1>
+        <p>Empowering planners and communities to build sustainable, connected futures in just a few clicks.</p>
     </section>
 
     <section class="content">
-        <h2>Contact Us</h2>
+        <h2>Welcome to UrbanPlan</h2>
         <p>
-            We’re here to help you with your urban planning needs. Whether you have questions about our projects,
-            need assistance with resources, or want to collaborate, feel free to get in touch.
+            Discover UrbanPlan, your go-to platform for smarter urban infrastructure planning. Our interactive dashboard
+            empowers planners, policymakers, and communities to visualize and analyze critical spatial data, from
+            administrative boundaries to essential infrastructure like schools, hospitals, and roads. With intuitive
+            tools and real-time insights, UrbanPlan simplifies complex urban challenges, helping you build sustainable,
+            connected, and thriving cities. Explore the future of urban planning today!
         </p>
-         <h2>Meet Our Team</h2>
-        <div class="team-grid">
-            <div class="team-card">
-                <img src="image/rajan.png" alt="Rajan Paudel">
-                <h3>Rajan Paudel</h3>
-                <p>Front-End Developer</p>
-                <p><a href="mailto:rajanpaudel08@gmail.com">rajanpaudel08@gmail.com</a></p>
-            </div>
-            <div class="team-card">
-                <img src="image/susham.png" alt="Susham Shrestha">
-                <h3>Susham Shrestha</h3>
-                <p>Back-End Developer</p>
-                <p><a href="mailto:sushamsht@gmail.com">sushamsht@gmail.com</a></p>
-            </div>
-            <div class="team-card">
-                <img src="image/sagar.png" alt="Sagar Upadhaya">
-                <h3>Sagar Upadhaya</h3>
-                <p>Project Manager</p>
-                <p><a href="mailto:sagarupadhaya713@gmail.com">sagarupadhaya713@gmail.com</a></p>
-            </div>
-        </div>
+        <h2>About Our Project</h2>
+        <p>
+            UrbanPlan is an innovative web-based platform designed to transform urban infrastructure planning through
+            interactive geospatial analysis. Our mission is to empower urban planners, policymakers, and communities
+            with intuitive tools to visualize and optimize city resources, fostering sustainable and connected urban
+            environments. Key features include:
+        <ul>
+            <li><strong>Interactive Geospatial Visualization:</strong> Toggle administrative layers (provinces,
+                districts, local levels) and infrastructure data (schools, hospitals, roads) on a dynamic map powered by
+                Leaflet.js.</li>
+            <li><strong>Advanced Analytical Tools:</strong> Perform spatial analyses like creating 5km hospital buffers,
+                filtering schools by district, measuring road lengths, and generating capacity charts.</li>
+            <li><strong>User-Friendly Interface:</strong> A collapsible sidebar and info panel streamline navigation,
+                making complex data accessible to all users.</li>
+            <li><strong>Actionable Insights:</strong> Support data-driven decisions for urban development, resource
+                allocation, and policy planning.</li>
+            <li><strong>Extensible Design:</strong> Built with modern technologies (Turf.js, Chart.js) to support future
+                enhancements like real-time data integration.</li>
+
+        </ul>
+        <p>
+            UrbanPlan is your partner in building smarter, more resilient cities for the future.
+        </p>
     </section>
 
     <footer>
         <div class="footer-container">
             <p>© 2025 UrbanPlan. All rights reserved.</p>
-            <a href="contact.html">Contact</a>
+            <a href="client/contact.html">Contact</a>
         </div>
     </footer>
 
@@ -437,7 +376,6 @@
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
-
     </script>
 </body>
 
