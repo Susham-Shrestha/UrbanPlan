@@ -1,0 +1,382 @@
+<script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+        return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                    row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                    headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+    }
+</script>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Infrastructure Planning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #2d3748;
+            background-color: #f7fafc;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: #1a202c;
+            padding: 1.2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #e2e8f0;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 0.5rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #68d391;
+            transform: translateY(-2px);
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #2d3748;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #e2e8f0;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #4a5568;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('image/index.jpg');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            text-align: center;
+            padding: 6rem 2rem;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Section */
+        .content {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .content h2 {
+            font-size: 2rem;
+            color: #1a202c;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .content h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: #68d391;
+            margin-top: 0.5rem;
+        }
+
+        .content p,
+        .content ul {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: #4a5568;
+        }
+
+        .content ul {
+            list-style: disc;
+            padding-left: 2rem;
+        }
+
+        .content ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1a202c;
+            color: #e2e8f0;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        footer .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        footer a {
+            color: #68d391;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #48bb78;
+        }
+
+        footer .social-links {
+            margin-top: 1rem;
+        }
+
+        footer .social-links a {
+            margin: 0 0.75rem;
+            font-size: 1.3rem;
+            transition: transform 0.3s ease;
+        }
+
+        footer .social-links a:hover {
+            transform: scale(1.2);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 0.5rem;
+                display: none;
+                width: 100%;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background-color: #1a202c;
+                padding: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+                color: #e2e8f0;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">UrbanPlan</a>
+            <span class="menu-toggle">☰</span>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li>
+                    <a href="projects.html">Mini Project</a>
+                </li>
+                <li>
+                    <a href="resources.html">Resources</a>
+                </li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Visualize, analyze, and optimize urban infrastructure with our interactive dashboard.</h1>
+        <p>Empowering planners and communities to build sustainable, connected futures in just a few clicks.</p>
+    </section>
+
+    <section class="content">
+        <h2>Welcome to UrbanPlan</h2>
+        <p>
+            Discover UrbanPlan, your go-to platform for smarter urban infrastructure planning. Our interactive dashboard
+            empowers planners, policymakers, and communities to visualize and analyze critical spatial data, from
+            administrative boundaries to essential infrastructure like schools, hospitals, and roads. With intuitive
+            tools and real-time insights, UrbanPlan simplifies complex urban challenges, helping you build sustainable,
+            connected, and thriving cities. Explore the future of urban planning today!
+        </p>
+        <h2>About Our Project</h2>
+        <p>
+            UrbanPlan is an innovative web-based platform designed to transform urban infrastructure planning through
+            interactive geospatial analysis. Our mission is to empower urban planners, policymakers, and communities
+            with intuitive tools to visualize and optimize city resources, fostering sustainable and connected urban
+            environments. Key features include:
+        <ul>
+            <li><strong>Interactive Geospatial Visualization:</strong> Toggle administrative layers (provinces,
+                districts, local levels) and infrastructure data (schools, hospitals, roads) on a dynamic map powered by
+                Leaflet.js.</li>
+            <li><strong>Advanced Analytical Tools:</strong> Perform spatial analyses like creating 5km hospital buffers,
+                filtering schools by district, measuring road lengths, and generating capacity charts.</li>
+            <li><strong>User-Friendly Interface:</strong> A collapsible sidebar and info panel streamline navigation,
+                making complex data accessible to all users.</li>
+            <li><strong>Actionable Insights:</strong> Support data-driven decisions for urban development, resource
+                allocation, and policy planning.</li>
+            <li><strong>Extensible Design:</strong> Built with modern technologies (Turf.js, Chart.js) to support future
+                enhancements like real-time data integration.</li>
+
+        </ul>
+        <p>
+            UrbanPlan is your partner in building smarter, more resilient cities for the future.
+        </p>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <p>© 2025 UrbanPlan. All rights reserved.</p>
+            <a href="contact.html">Contact</a>
+        </div>
+    </footer>
+
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

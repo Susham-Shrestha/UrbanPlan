@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Infrastructure Planning Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 font-roboto text-gray-800">
+    <div class="sidebar collapsed">
+        <button class="toggle-arrow"><i class="fas fa-chevron-right"></i></button>
+        <div class="space-y-4">
+            <div class="layer-section">
+                <h3 class="text-xl font-semibold mb-2 text-blue-800">Administrative Layers</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center cursor-pointer hover:text-blue-600 text-lg">
+                        <input type="checkbox" id="provincesLayer" onchange="toggleLayer('provinceLayer')"
+                            class="mr-2 accent-blue-600">
+                        Provinces
+                    </label>
+                    <label class="flex items-center cursor-pointer hover:text-blue-600 text-lg">
+                        <input type="checkbox" id="districtsLayer" onchange="toggleLayer('districtLayer')"
+                            class="mr-2 accent-blue-600">
+                        Districts
+                    </label>
+                    <label class="flex items-center cursor-pointer hover:text-blue-600 text-lg">
+                        <input type="checkbox" id="localLevelsLayer" onchange="toggleLayer('localLevelLayer')"
+                            class="mr-2 accent-blue-600">
+                        Local Levels
+                    </label>
+                </div>
+            </div>
+            <div class="layer-section">
+                <h3 class="text-xl font-semibold mb-2 text-green-800">Infrastructure Layers</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center cursor-pointer hover:text-green-600 text-lg">
+                        <input type="checkbox" id="schoolsLayer" onchange="toggleLayer('schoolLayer')"
+                            class="mr-2 accent-green-600">
+                        Schools
+                    </label>
+                    <label class="flex items-center cursor-pointer hover:text-green-600 text-lg">
+                        <input type="checkbox" id="hospitalsLayer" onchange="toggleLayer('hospitalLayer')"
+                            class="mr-2 accent-green-600">
+                        Hospitals
+                    </label>
+                    <label class="flex items-center cursor-pointer hover:text-green-600 text-lg">
+                        <input type="checkbox" id="roadsLayer" onchange="toggleLayer('roadLayer')"
+                            class="mr-2 accent-green-600">
+                        Roads
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="map-area">
+        <div id="map"></div>
+    </div>
+    <div class="info-panel collapsed">
+        <button class="info-box" onclick="toggleFunctions()"><i class="fas fa-cog"></i></button>
+        <div id="functionsContent" class="space-y-2">
+            <button onclick="toggleFunctionBox(this)" data-box-id="bufferSelected"
+                class="info-box bg-gray-300 hover:bg-gray-400 text-gray-800">
+                <i class="fas fa-shield-alt"></i>
+            </button>
+            <button onclick="toggleFunctionBox(this)" data-box-id="filterGovt"
+                class="info-box bg-gray-300 hover:bg-gray-400 text-gray-800">
+                <i class="fas fa-filter"></i>
+            </button>
+            <button onclick="toggleFunctionBox(this)" data-box-id="countSchools"
+                class="info-box bg-gray-300 hover:bg-gray-400 text-gray-800">
+                <i class="fas fa-chart-bar"></i>
+            </button>
+            <button onclick="toggleFunctionBox(this)" data-box-id="measureRoad"
+                class="info-box bg-gray-300 hover:bg-gray-400 text-gray-800">
+                <i class="fas fa-ruler"></i>
+            </button>
+            <button onclick="toggleFunctionBox(this)" data-box-id="filterSchools"
+                class="info-box bg-gray-300 hover:bg-gray-400 text-gray-800">
+                <i class="fas fa-funnel-dollar"></i>
+            </button>
+            <button onclick="toggleFunctionBox(this)" data-box-id="capacityChart"
+                class="info-box bg-gray-300 hover:bg-gray-400 text-gray-800">
+                <i class="fas fa-chart-pie"></i>
+            </button>
+             <button onclick="toggleFunctionBox(this)" data-box-id="findSelected"
+                class="info-box bg-gray-300 hover:bg-gray-400 text-gray-800">
+                <i class="fas fa-search"></i>
+            </button>
+            <button onclick="toggleFunctionBox(this)" data-box-id="clear"
+                class="info-box bg-gray-300 hover:bg-gray-400 text-gray-800">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+        <!-- Function Boxes -->
+        <div id="bufferAllBox" class="function-box hidden">
+            <h3>Buffer All Hospitals</h3>
+            <p>Create a 5km buffer around all hospitals. Click to apply.</p>
+            <button onclick="createHospitalBuffer(5)">Apply Buffer</button>
+        </div>
+
+        <div id="bufferSelectedBox" class="function-box hidden">
+            <h3>Buffer Selected Hospital</h3>
+            <p>Select a hospital and create a 5km buffer.</p>
+            <select id="hospitalSelect" onchange="createHospitalBuffer(5)" class="w-full p-1 bg-white text-sm mb-2">
+                <option value="">All</option>
+                <!-- Add hospital options as needed -->
+            </select>
+            <button onclick="createHospitalBuffer(5)">Apply Buffer</button>
+        </div>
+        <div id="filterGovtBox" class="function-box hidden">
+            <h3>Filter Pharmacy</h3>
+            <p>Filter to show only pharmacy.</p>
+            <button onclick="filterHospitalsByOperator('pharmacy')">Apply Filter</button>
+        </div>
+        <div id="countSchoolsBox" class="function-box hidden">
+            <h3>Count Schools by Provinces.</h3>
+            <p>Count the number of schools in each provinces.</p>
+            <button onclick="countSchoolsByProvince()">Generate Count</button>
+        </div>
+        <div id="measureRoadBox" class="function-box hidden">
+            <h3>Measure Road Density</h3>
+            <p>Calculate the road density only for that province.</p>
+            <select id="provinceSelect">
+                <option value="">-- Select Province --</option>
+            </select>
+            <button onclick="calculateRoadDensityForSelected()">Calculate Road Density</button>
+
+        </div>
+        <div id="filterSchoolsBox" class="function-box hidden">
+            <h3>Filter Schools by District</h3>
+            <p>Select a district to filter schools.</p>
+            <select id="districtSelect" onchange="filterSchoolsByDistrict()" class="w-full p-1 bg-white text-sm mb-2">
+                <option value="">District</option>
+            </select>
+            <button onclick="filterSchoolsByDistrict()">Apply Filter</button>
+        </div>
+        <div id="capacityChartBox" class="function-box hidden">
+            <canvas id="schoolChart" width="600" height="400"></canvas>
+            <canvas id="hospitalChart" width="600" height="400"></canvas>
+            <h3>Show Capacity Chart</h3>
+            <p>Display a chart of infrastructure capacities.</p>
+            <button onclick="loadAndShowCharts()">Show Chart</button>
+        </div>
+        <div id="findSelectedBox" class="function-box hidden" >
+            <h3>Create a Buffer with Information.</h3>
+            <p>Click on any Place on map.</p>
+            <button onclick="toggleClickBufferMode()">Create Buffer</button>
+        </div>
+
+        <div id="clearBox" class="function-box hidden">
+            <h3>Clear Functions</h3>
+            <p>Remove all buffers, filters, and overlays from the map.</p>
+            <button onclick="clearFunctions()">Clear All</button>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/tools.js" defer></script>
+    <script>
+        document.querySelector('.toggle-arrow').addEventListener('click', function () {
+            const sidebar = document.querySelector('.sidebar');
+            const arrow = this.querySelector('i');
+            sidebar.classList.toggle('collapsed');
+            if (sidebar.classList.contains('collapsed')) {
+                arrow.classList.replace('fa-chevron-left', 'fa-chevron-right');
+            } else {
+                arrow.classList.replace('fa-chevron-right', 'fa-chevron-left');
+            }
+            resizeMap(); // Force map resize on toggle
+        });
+
+
+        function toggleFunctions() {
+            const content = document.getElementById('functionsContent');
+            const isHidden = content.classList.contains('hidden');
+            content.classList.toggle('hidden');
+            if (!isHidden) {
+                // If closing the functions panel, hide any open function box
+                document.querySelectorAll('.function-box').forEach(box => box.classList.add('hidden'));
+            }
+        }
+
+        function toggleFunctionBox(button) {
+            const boxId = button.getAttribute('data-box-id') + 'Box';
+            const box = document.getElementById(boxId);
+            if (box.classList.contains('hidden')) {
+                // Hide all other boxes
+                document.querySelectorAll('.function-box').forEach(otherBox => otherBox.classList.add('hidden'));
+                // Show this box
+                box.classList.remove('hidden');
+            } else {
+                // Hide this box
+                box.classList.add('hidden');
+            }
+        }
+
+        // Function to resize the Leaflet map
+        function resizeMap() {
+            if (window.map) {
+                setTimeout(() => {
+                    window.map.invalidateSize();
+                }, 300); // Match the CSS transition duration
+            }
+        }
+        function toggleSettings() {
+            const settingsBox = document.getElementById('settingsBox');
+            settingsBox.classList.toggle('hidden');
+        }
+
+
+    </script>
+</body>
+
+</html>
