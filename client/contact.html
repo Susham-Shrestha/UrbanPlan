@@ -207,6 +207,7 @@
         .content ul li {
             margin-bottom: 0.5rem;
         }
+
         /* Team Section */
         .team-grid {
             display: grid;
@@ -316,6 +317,10 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: none;
+            }
+
             .nav-links {
                 flex-direction: column;
                 gap: 0.5rem;
@@ -352,7 +357,8 @@
             .hero p {
                 font-size: 1rem;
             }
-               .team-grid {
+
+            .team-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -360,10 +366,6 @@
                 width: 80px;
                 height: 80px;
             }
-        }
-
-        .menu-toggle {
-            display: none;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -399,7 +401,7 @@
             We’re here to help you with your urban planning needs. Whether you have questions about our projects,
             need assistance with resources, or want to collaborate, feel free to get in touch.
         </p>
-         <h2>Meet Our Team</h2>
+        <h2>Meet Our Team</h2>
         <div class="team-grid">
             <div class="team-card">
                 <img src="image/rajan.png" alt="Rajan Paudel">
